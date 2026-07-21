@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Валидатор и Форматировщик онлайн | DevTools</title>
+    <meta name="description" content="Бесплатный инструмент для проверки синтаксиса, форматирования и минификации JSON-строк. Быстрый поиск ошибок прямо в браузере.">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            line-height: 1.5;
+        }
+        .container {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        h1 { margin-top: 0; font-size: 1.5rem; }
+        
+        .toolbar {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: #1d4ed8; }
+        button.secondary {
+            background-color: #4b5563;
+        }
+        button.secondary:hover { background-color: #374151; }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .editor-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .pane {
+            display: flex;
+            flex-direction: column;
+        }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .status-box {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-family: monospace;
+            display: none;
+        }
+        .status-success {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a3e635;
+            display: block;
+        }
+        .status-error {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+            display: block;
+        }
+
+        .seo-content {
+            margin-top: 3rem;
+            color: #4b5563;
+        }
+        .seo-content h2 { font-size: 1.25rem; color: #1f2937; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="back-link">← На главную</a>
+        <h1>JSON Валидатор и Форматировщик</h1>
+        
+        <div class="toolbar">
+            <button id="format-btn">Форматировать (2 пробела)</button>
+            <button id="minify-btn" class="secondary">Минифицировать</button>
+            <button id="clear-btn" class="secondary" style="background-color: #dc2626;">Очистить</button>
+        </div>
+
+        <div class="editor-grid">
+            <!-- Левая колонка: Ввод -->
+            <div class="pane">
+                <label for="json-input">Исходный JSON:</label>
+                <textarea id="json-input" placeholder='Вставьте JSON сюда, например: {"name": "DevTools", "active": true}'></textarea>
+                <div id="status-box" class="status-box"></div>
+            </div>
+            
+            <!-- Правая колонка: Результат -->
+            <div class="pane">
+                <label for="json-output">Результат:</label>
+                <textarea id="json-output" readonly placeholder="Здесь появится результат обработки..."></textarea>
+                <div style="margin-top: 0.75rem;">
+                    <button id="copy-btn" class="secondary" style="width: 100%;">Копировать результат</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <article class="seo-content">
+        <h2>Зачем нужен онлайн валидатор JSON?</h2>
+        <p>Формат JSON (JavaScript Object Notation) является стандартом де-факто для обмена данными в веб-приложениях и API. Обычная пропущенная запятая или незакрытая кавычка приводит к сбоям в парсерах.</p>
+        <p>Наш инструмент проверяет синтаксис на лету с помощью встроенного метода <code>JSON.parse()</code> и подсвечивает точные ошибки. Вся обработка происходит локально в браузере, обеспечивая полную конфиденциальность ваших данных.</p>
+    </article>
+
+    <script>
+        const inputEl = document.getElementById('json-input');
+        const outputEl = document.getElementById('json-output');
+        const statusEl = document.getElementById('status-box');
+        
+        const formatBtn = document.getElementById('format-btn');
+        const minifyBtn = document.getElementById('minify-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const copyBtn = document.getElementById('copy-btn');
+
+        // Функция валидации и обработки
+        function processJSON(minify = false) {
+            const rawText = inputEl.value.trim();
+            
+            if (!rawText) {
+                outputEl.value = '';
+                statusEl.style.display = 'none';
+                return;
+            }
+
+            try {
+                // Парсим строку в объект JS для проверки валидности
+                const parsedObj = JSON.parse(rawText);
+                
+                // Форматируем обратно в строку с отступами (2 пробела) или в одну линию (минификация)
+                outputEl.value = JSON.stringify(parsedObj, null, minify ? 0 : 2);
+                
+                // Выводим статус успеха
+                statusEl.className = 'status-box status-success';
+                statusEl.innerText = '✓ JSON корректен (Валиден)';
+            } catch (error) {
+                // Если JS сгенерировал ошибку парсинга, показываем её пользователю
+                outputEl.value = '';
+                statusEl.className = 'status-box status-error';
+                statusEl.innerText = 'Ошибка синтаксиса: ' + error.message;
+            }
+        }
+
+        // События кнопок
+        formatBtn.addEventListener('click', () => processJSON(false));
+        minifyBtn.addEventListener('click', () => processJSON(true));
+        
+        clearBtn.addEventListener('click', () => {
+            inputEl.value = '';
+            outputEl.value = '';
+            statusEl.style.display = 'none';
+        });
+
+        // Автоматическая проверка при вводе
+        inputEl.addEventListener('input', () => processJSON(false));
+
+        // Копирование результата
+        copyBtn.addEventListener('click', () => {
+            if (outputEl.value) {
+                navigator.clipboard.writeText(outputEl.value);
+                const originalText = copyBtn.innerText;
+                copyBtn.innerText = 'Скопировано в буфер!';
+                copyBtn.style.backgroundColor = '#059669';
+                setTimeout(() => {
+                    copyBtn.innerText = originalText;
+                    copyBtn.style.backgroundColor = '';
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

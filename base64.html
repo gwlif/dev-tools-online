@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кодировщик и декодировщик Base64 онлайн | DevTools</title>
+    <meta name="description" content="Бесплатный инструмент для кодирования текста в формат Base64 и обратного декодирования. Быстро, безопасно, прямо в браузере.">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            line-height: 1.5;
+        }
+        .container {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        h1 { margin-top: 0; font-size: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1rem;
+            box-sizing: border-box;
+            margin-bottom: 1.5rem;
+            min-height: 120px;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .grid-blocks {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .output-wrapper {
+            position: relative;
+        }
+        
+        .output-group { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+        .output-group input { 
+            flex-grow: 1; 
+            background-color: #f3f4f6; 
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1rem;
+        }
+        
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: #1d4ed8; }
+        
+        .error-msg {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: -1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .seo-content {
+            margin-top: 3rem;
+            color: #4b5563;
+        }
+        .seo-content h2 { font-size: 1.25rem; color: #1f2937; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="back-link">← На главную</a>
+        <h1>Кодировщик и декодировщик Base64</h1>
+        
+        <!-- Блок кодирования -->
+        <label for="plain-input">Обычный текст (для кодирования в Base64):</label>
+        <textarea id="plain-input" placeholder="Введите текст..."></textarea>
+        
+        <label for="base64-output">Результат Base64:</label>
+        <div id="plain-error" class="error-msg">Ошибка кодирования: проверьте символы.</div>
+        <div class="output-group">
+            <input type="text" id="base64-output" readonly placeholder="Здесь появится Base64-строка">
+            <button id="copy-plain-btn">Копировать</button>
+        </div>
+
+        <hr style="margin: 2rem 0; border: 0; border-top: 1px solid #e5e7eb;">
+
+        <!-- Блок декодирования -->
+        <label for="base64-input">Base64 строка (для декодирования в текст):</label>
+        <textarea id="base64-input" placeholder="Введите Base64..."></textarea>
+        
+        <label for="plain-output">Расшифрованный текст:</label>
+        <div id="base64-error" class="error-msg">Ошибка: введена некорректная Base64 строка.</div>
+        <div class="output-group">
+            <input type="text" id="plain-output" readonly placeholder="Здесь появится исходный текст">
+            <button id="copy-base64-btn">Копировать</button>
+        </div>
+    </div>
+
+    <article class="seo-content">
+        <h2>Что такое формат Base64?</h2>
+        <p>Base64 — это метод кодирования двоичных данных в текстовый формат с использованием только 64 безопасных символов ASCII (латиница, цифры, `+` и `/`). Чаще всего используется в веб-разработке для передачи данных через HTTP, внедрения маленьких картинок (Data URI) или работы с токенами аутентификации.</p>
+        <p><strong>Конфиденциальность:</strong> Все операции выполняются локально в вашем браузере через JavaScript-функции <code>btoa()</code> и <code>atob()</code>. Данные не передаются на сервер.</p>
+    </article>
+
+    <script>
+        // Элементы DOM
+        const plainInput = document.getElementById('plain-input');
+        const base64Output = document.getElementById('base64-output');
+        const plainError = document.getElementById('plain-error');
+
+        const base64Input = document.getElementById('base64-input');
+        const plainOutput = document.getElementById('plain-output');
+        const base64Error = document.getElementById('base64-error');
+
+        const copyPlainBtn = document.getElementById('copy-plain-btn');
+        const copyBase64Btn = document.getElementById('copy-base64-btn');
+
+        // Обработка кодирования (Текст -> Base64)
+        plainInput.addEventListener('input', () => {
+            const val = plainInput.value;
+            if (!val) {
+                base64Output.value = '';
+                plainError.style.display = 'none';
+                return;
+            }
+            try {
+                // btoa корректно работает со стандартными строками, для поддержки кириллицы оборачиваем через encodeURIComponent
+                base64Output.value = btoa(encodeURIComponent(val).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+                    return String.fromCharCode('0x' + p1);
+                }));
+                plainError.style.display = 'none';
+            } catch (e) {
+                plainError.style.display = 'block';
+                base64Output.value = '';
+            }
+        });
+
+        // Обработка декодирования (Base64 -> Текст)
+        base64Input.addEventListener('input', () => {
+            const val = base64Input.value.trim();
+            if (!val) {
+                plainOutput.value = '';
+                base64Error.style.display = 'none';
+                return;
+            }
+            try {
+                const decoded = decodeURIComponent(Array.prototype.map.call(atob(val), (c) => {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                plainOutput.value = decoded;
+                base64Error.style.display = 'none';
+            } catch (e) {
+                base64Error.style.display = 'block';
+                plainOutput.value = '';
+            }
+        });
+
+        // Универсальная функция копирования с визуальным откликом
+        function setupCopy(button, inputField) {
+            button.addEventListener('click', () => {
+                if (inputField.value) {
+                    navigator.clipboard.writeText(inputField.value);
+                    const originalText = button.innerText;
+                    button.innerText = 'Скопировано!';
+                    button.style.backgroundColor = '#059669';
+                    setTimeout(() => {
+                        button.innerText = originalText;
+                        button.style.backgroundColor = '';
+                    }, 2000);
+                }
+            });
+        }
+
+        setupCopy(copyPlainBtn, base64Output);
+        setupCopy(copyBase64Btn, plainOutput);
+    </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор SHA-256 онлайн — Быстро и безопасно</title>
+    <meta name="description" content="Бесплатный локальный генератор SHA-256 хешей. Данные обрабатываются в вашем браузере и не отправляются на сервер.">
+    <style>
+        /* Базовые стили для чистого и современного UI */
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            line-height: 1.5;
+        }
+        .container {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h1 { margin-top: 0; font-size: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1rem;
+            box-sizing: border-box;
+            margin-bottom: 1.5rem;
+        }
+        textarea { resize: vertical; min-height: 120px; }
+        textarea:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .output-group { display: flex; gap: 0.5rem; }
+        .output-group input { margin-bottom: 0; flex-grow: 1; background-color: #f3f4f6; }
+        
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: #1d4ed8; }
+        
+        /* Блок для SEO-текста */
+        .seo-content {
+            margin-top: 3rem;
+            color: #4b5563;
+        }
+        .seo-content h2 { font-size: 1.25rem; color: #1f2937; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Генератор SHA-256 хешей</h1>
+        
+        <label for="input-text">Введите текст для хеширования:</label>
+        <textarea id="input-text" placeholder="Начните вводить текст..."></textarea>
+
+        <label for="output-hash">Результат (SHA-256):</label>
+        <div class="output-group">
+            <input type="text" id="output-hash" readonly placeholder="Здесь появится хеш">
+            <button id="copy-btn">Копировать</button>
+        </div>
+    </div>
+
+    <!-- Текстовый блок для поисковых систем (SEO) -->
+    <article class="seo-content">
+        <h2>Как работает этот SHA-256 генератор?</h2>
+        <p>Этот инструмент использует нативный Web Crypto API вашего браузера. Это означает, что вычисление криптографического хеша происходит локально на вашем устройстве.</p>
+        <p><strong>Безопасность:</strong> Ваши данные не передаются по сети, не сохраняются в базах данных и недоступны третьим лицам. Идеально подходит для хеширования паролей, ключей API или проверки целостности данных.</p>
+    </article>
+
+    <script>
+        // Асинхронная функция для вычисления SHA-256
+        async function generateSHA256(message) {
+            // Конвертируем строку в массив байтов
+            const msgBuffer = new TextEncoder().encode(message);
+            
+            // Вычисляем хеш (возвращает ArrayBuffer)
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            
+            // Преобразуем ArrayBuffer в массив байтов
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            
+            // Конвертируем байты в шестнадцатеричную строку (hex)
+            const hashHex = hashArray
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+                
+            return hashHex;
+        }
+
+        const inputEl = document.getElementById('input-text');
+        const outputEl = document.getElementById('output-hash');
+        const copyBtn = document.getElementById('copy-btn');
+
+        // Реактивное обновление: хеш генерируется при каждом нажатии клавиши
+        inputEl.addEventListener('input', async () => {
+            const text = inputEl.value;
+            if (text.length > 0) {
+                outputEl.value = await generateSHA256(text);
+            } else {
+                outputEl.value = ''; // Очищаем, если поле ввода пустое
+            }
+        });
+
+        // Функция копирования в буфер обмена
+        copyBtn.addEventListener('click', () => {
+            if(outputEl.value) {
+                navigator.clipboard.writeText(outputEl.value);
+                
+                // Визуальный отклик для пользователя
+                const originalText = copyBtn.innerText;
+                copyBtn.innerText = 'Скопировано!';
+                copyBtn.style.backgroundColor = '#059669'; // Зеленый цвет успеха
+                
+                setTimeout(() => {
+                    copyBtn.innerText = originalText;
+                    copyBtn.style.backgroundColor = '';
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

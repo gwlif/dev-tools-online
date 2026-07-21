@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Набор инструментов для разработчиков онлайн | DevTools</title>
+    <meta name="description" content="Бесплатные утилиты для программистов и сисадминов: генератор SHA-256, конвертер Base64, валидатор JSON. Работают локально в браузере без отправки данных на сервер.">
+    <style>
+        /* Базовые стили */
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f3f4f6;
+            color: #111827;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+        
+        /* Шапка сайта */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+        header p {
+            color: #4b5563;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Сетка карточек с инструментами */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        /* Карточка инструмента */
+        .tool-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            border-color: #3b82f6;
+        }
+
+        .tool-card h2 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.25rem;
+            color: #2563eb;
+        }
+
+        .tool-card p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+
+        /* SEO Блок внизу */
+        .seo-footer {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+        .seo-footer h2 {
+            color: #1f2937;
+            font-size: 1.5rem;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Web DevTools</h1>
+        <p>Быстрые, безопасные и бесплатные инструменты для работы с данными, текстом и форматами прямо в вашем браузере.</p>
+    </header>
+
+    <main class="tools-grid">
+        <!-- Карточка 1: SHA-256 -->
+        <a href="sha256.html" class="tool-card">
+            <h2>Генератор SHA-256</h2>
+            <p>Вычисление криптографического хеша SHA-256 на лету. Безопасная обработка данных без отправки на сервер.</p>
+        </a>
+
+        <!-- Карточка 2: Base64 -->
+        <a href="base64.html" class="tool-card">
+            <h2>Кодировщик Base64</h2>
+            <p>Двусторонний конвертер: кодирование текста в формат Base64 и быстрое декодирование обратно.</p>
+        </a>
+
+        <!-- Карточка 3: Заглушка для будущей утилиты -->
+        <a href="json-formatter.html" class="tool-card">
+            <h2>JSON Валидатор</h2>
+            <p>Форматирование, проверка синтаксиса и минификация JSON-строк. Поиск ошибок в структуре данных.</p>
+        </a>
+    </main>
+
+    <section class="seo-footer">
+        <h2>Почему стоит использовать наши инструменты?</h2>
+        <p>Мы создали этот набор утилит для инженеров, сисадминов и веб-разработчиков, которым нужны быстрые решения под рукой. Главное преимущество архитектуры — <strong>Client-Side обработка</strong>. </p>
+        <p>Все вычисления (хеширование, кодирование форматов) выполняются встроенными средствами вашего браузера (нативный Web API). Ваши данные, пароли, токены или логи никогда не покидают ваше устройство и не передаются на сторонние серверы, что гарантирует 100% конфиденциальность.</p>
+    </section>
+
+</body>
+</html>
